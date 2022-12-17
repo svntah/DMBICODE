@@ -1,0 +1,68 @@
+# install and load the rpart package
+#LOAD UP the MBS.csv clean file attached.
+install.packages("rpart")
+install.packages("class")
+install.packages("rpart.plot")
+library(rpart.plot)
+library(class)
+library("rpart")
+# load the data set
+dat <- read.csv("/Users/santiagocravino/Downloads/MBS.csv")
+
+# define the formula for the linear regression model
+f1 <- Annual.Salary ~ Undergrad.Degree + Undergrad.Grade + MBA.Grade + Work.Experience + Employability.Before + Employability.After
+
+# create the linear regression model
+model1 <- lm(f1, data = dat)
+
+# view the summary of the model
+summary(model1)
+
+# define the formula for the decision tree model
+f2 <- Status ~ Undergrad.Degree + Undergrad.Grade + MBA.Grade + Work.Experience + Employability.Before + Employability.After
+
+# create the decision tree model
+model2 <- rpart(f2, data = dat)
+
+# view the summary of the model
+summary(model2)
+
+# visualize the decision tree model
+plot(model2)
+
+
+# make predictions with the linear regression model
+predictions1 <- predict(model1, newdata = dat)
+
+# make predictions with the decision tree model
+predictions2 <- predict(model2, newdata = dat)
+#########
+f <- Status ~ Undergrad.Degree + Undergrad.Grade + MBA.Grade + Work.Experience + Employability.Before + Employability.After
+
+# create the decision tree model
+model <- rpart(f, data = dat)
+par(mar=c(5,5,5,5), xpd=FALSE, mfrow=c(1,1), mgp=c(3,1,0), cex=1.5)
+
+# visualize the decision tree model
+plot(model)
+# make predictions with the decision tree model
+predictions <- predict(model, newdata = dat)
+# view the summary of the model
+summary(model)
+
+################ k means 
+install.packages("stats")
+library(stats)
+cluster <- kmeans(dat[,c("Annual.Salary", "Undergrad.Grade")], 3)
+cluster$cluster
+plot(dat[,c("Annual.Salary", "Undergrad.Grade")], col=cluster$cluster)
+
+##########
+mat <- as.matrix(dat[, c("undergrad.grade", "annual.salary")])
+
+# select only observations with an annual salary in the range 0 to 100000
+mat <- subset(mat, mat[, 2] >= 0 & mat[, 2] <= 100000)
+
+# create a k-means cluster with 3 clusters
+cluster <- kmeans(mat, 3)
+
